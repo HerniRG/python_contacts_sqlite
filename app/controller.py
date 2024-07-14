@@ -30,21 +30,34 @@ class ContactController:
             input("\nPresiona Enter para continuar...")
 
     def add_contact(self):
-        name, phone, email = self.view.get_contact_info()
-        self.model.add_contact(name, phone, email)
-        print("Contacto añadido")
+        try:
+            name, phone, email = self.view.get_contact_info()
+            self.model.add_contact(name, phone, email)
+            print("Contacto añadido")
+        except ValueError as e:
+            print(f"Error: {e}")
 
     def view_contacts(self):
         contacts = self.model.get_contacts()
         self.view.display_contacts(contacts)
 
     def update_contact(self):
-        contact_id = self.view.get_contact_id()
-        name, phone, email = self.view.get_contact_info()
-        self.model.update_contact(contact_id, name, phone, email)
-        print("Contacto actualizado")
+        try:
+            contact_id = self.view.get_contact_id()
+            if contact_id <= 0:
+                raise ValueError("ID de contacto no válido. Debe ser un número positivo.")
+            name, phone, email = self.view.get_contact_info()
+            self.model.update_contact(contact_id, name, phone, email)
+            print("Contacto actualizado")
+        except ValueError as e:
+            print(f"Error: {e}")
 
     def delete_contact(self):
-        contact_id = self.view.get_contact_id()
-        self.model.delete_contact(contact_id)
-        print("Contacto eliminado")
+        try:
+            contact_id = self.view.get_contact_id()
+            if contact_id <= 0:
+                raise ValueError("ID de contacto no válido. Debe ser un número positivo.")
+            self.model.delete_contact(contact_id)
+            print("Contacto eliminado")
+        except ValueError as e:
+            print(f"Error: {e}")

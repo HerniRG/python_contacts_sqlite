@@ -18,6 +18,8 @@ class ContactModel():
         self.conn.commit()
 
     def add_contact(self, name, phone, email):
+        if not name or not phone or not email:
+            raise ValueError("Todos los campos son obligatorios.")
         query = "INSERT INTO contacts (name, phone, email) VALUES (?, ?, ?)"
         self.conn.execute(query, (name, phone, email))
         self.conn.commit()
@@ -28,11 +30,17 @@ class ContactModel():
         return cursor.fetchall()
 
     def update_contact(self, contact_id, name, phone, email):
+        if not name or not phone or not email:
+            raise ValueError("Todos los campos son obligatorios.")
         query = "UPDATE contacts SET name = ?, phone = ?, email = ? WHERE id = ?"
-        self.conn.execute(query, (name, phone, email, contact_id))
+        cursor = self.conn.execute(query, (name, phone, email, contact_id))
+        if cursor.rowcount == 0:
+            raise ValueError(f"Contacto con ID {contact_id} no encontrado.")
         self.conn.commit()
 
     def delete_contact(self, contact_id):
         query = "DELETE FROM contacts WHERE id = ?"
-        self.conn.execute(query, (contact_id,))
+        cursor = self.conn.execute(query, (contact_id,))
+        if cursor.rowcount == 0:
+            raise ValueError(f"Contacto con ID {contact_id} no encontrado.")
         self.conn.commit()
